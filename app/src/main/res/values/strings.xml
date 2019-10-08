@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">NHL</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Teams</string>
+    <string name="nav_header_title_loading">Loading…</string>
+    <string name="nav_header_title_error">Error</string>
+    <string name="nav_header_desc">NHL</string>
+    <string name="action_sort_by_number">Sort by number</string>
+    <string name="action_sort_by_name">Sort by name</string>
+    <string name="action_position_filter">Filter by position</string>
+    <string name="dialog_filter_position_title">Select position</string>
+    <string name="appbar_select_team">Select team in menu</string>
+
+
+
+    <string name="btn_retry">Retry</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <string name="players_loading_error">Failed to load players.</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/actionSortByName"
+        android:title="@string/action_sort_by_name"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/actionSortByNumber"
+        android:title="@string/action_sort_by_number"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/actionPositionFilter"
+        android:title="@string/action_position_filter"
+        app:showAsAction="never" />
+</menu>
