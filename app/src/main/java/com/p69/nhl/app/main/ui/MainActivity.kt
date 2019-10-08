@@ -41,19 +41,22 @@ class MainActivity : ScopedAppActivity(), MainView {
     toggle.isDrawerIndicatorEnabled = true
     toggle.syncState()
 
-    //Open drawer
-    drawerLayout.openDrawer(GravityCompat.START)
 
     //Set click listener for retry button
     retryButton.setOnClickListener {
       presenter.handleViewEvent(MainViewEvent.RetryLoadTeams)
     }
 
-    //Notify presenter that view is ready
+    //Trying to get saved state
     val restoredState = savedInstanceState?.getParcelable<MainState>(Constants.stateParcelKey)
-    presenter.handleViewEvent(
-      MainViewEvent.ViewStarted(restoredState)
-    )
+
+    //Open drawer for clean launch
+    if(restoredState == null) {
+      drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    //Notify presenter that view is ready
+    presenter.handleViewEvent(MainViewEvent.ViewStarted(restoredState))
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

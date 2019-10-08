@@ -25,8 +25,8 @@ class PlayersFragment : ScopedFragment(), PlayersView {
     setHasOptionsMenu(true)
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
     val restoredState = savedInstanceState?.getParcelable<PlayersState>(Constants.stateParcelKey)
     presenter.handleViewEvent(PlayersViewEvent.ViewCreated(restoredState))
   }
