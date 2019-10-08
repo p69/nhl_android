@@ -32,18 +32,23 @@ val Endpoint.url: String
 
 object NhlApi {
   suspend fun getTeams() = withContext(Dispatchers.IO) {
-    val json = httpGet(Endpoint.Teams)
-    tryDecode<TeamsResponse>(json).map { it.teams }
+    httpGetOk(Endpoint.Teams)
+      .flatMap {
+        tryDecode<TeamsResponse>(it)
+      }
+      .map {it.teams}
   }
 
   suspend fun getPlayers(teamId: Int) = withContext(Dispatchers.IO) {
-    val json = httpGet(Endpoint.Players(teamId))
-    tryDecode<PlayersResponse>(json).map { it.roster }
+    httpGetOk(Endpoint.Players(teamId))
+      .flatMap { tryDecode<PlayersResponse>(it) }
+      .map { it.roster }
   }
 
   suspend fun getPlayerDetails(playerId: Int) = withContext(Dispatchers.IO) {
-    val json = httpGet(Endpoint.Player(playerId))
-    tryDecode<PlayerDetailsResponse>(json).map { it.people[0] }
+    httpGetOk(Endpoint.Player(playerId))
+      .flatMap { tryDecode<PlayerDetailsResponse>(it) }
+      .map { it.people[0] }
   }
 
   private inline fun <reified T> tryDecode(json: String): Result<T> {

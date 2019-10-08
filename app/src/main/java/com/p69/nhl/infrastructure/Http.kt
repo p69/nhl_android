@@ -1,19 +1,21 @@
 package com.p69.nhl.infrastructure
 
-import com.android.volley.*
-import com.android.volley.toolbox.*
 import com.p69.nhl.api.*
-import com.p69.nhl.app.*
-import kotlin.coroutines.*
+import okhttp3.*
+import java.io.*
 
-val requestsQueue: RequestQueue = Volley.newRequestQueue(NhlApplication.instance)
+private val okClient = lazy { OkHttpClient() }
 
-suspend inline fun httpGet(endpoint: Endpoint) = suspendCoroutine<String> { continuation ->
-  val request = StringRequest(
-    Request.Method.GET,
-    endpoint.url,
-    Response.Listener<String> { continuation.resume(it) },
-    Response.ErrorListener { continuation.resumeWithException(it) })
-  //request.setShouldCache(false)
-  requestsQueue.add(request)
+fun httpGetOk(endpoint: Endpoint): Result<String> {
+  val request = Request.Builder().url(endpoint.url).build()
+  try {
+    val response = okClient.value.newCall(request).execute()
+    val body = response.body?.string()
+    if (body != null) {
+      return Result.success(body)
+    }
+    return Result.failure(IOException("Failed to read response"))
+  } catch (exc: Throwable) {
+    return Result.failure(exc)
+  }
 }

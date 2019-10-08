@@ -1,25 +1,18 @@
 package com.p69.nhl.infrastructure
 
 import android.view.*
-import com.android.volley.*
-import com.android.volley.toolbox.*
-import com.p69.nhl.app.*
+import com.p69.nhl.api.*
 import com.pixplicity.sharp.*
+import kotlinx.coroutines.*
 
-private val queue = Volley.newRequestQueue(NhlApplication.instance)
-
-private fun downloadSvg(url: String, onSuccess: String.()->Unit) {
-  val request = StringRequest(
-    Request.Method.GET,
-    url,
-    Response.Listener<String> { it.onSuccess() },
-    Response.ErrorListener {})
-  queue.add(request)
+fun CoroutineScope.loadSvgIcon(endpoint: Endpoint, menuItem: MenuItem) = launch {
+  val svg = downloadSvg(endpoint).getOrNull()
+  if (svg != null) {
+    val sharp = Sharp.loadString(svg)
+    menuItem.icon = sharp.drawable
+  }
 }
 
-fun MenuItem.loadSvgIcon(url: String) {
-  downloadSvg(url) {
-    val sharp = Sharp.loadString(this)
-    icon = sharp.drawable
-  }
+private suspend fun downloadSvg(endpoint: Endpoint) = withContext(Dispatchers.IO) {
+  httpGetOk(endpoint)
 }
