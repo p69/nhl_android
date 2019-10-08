@@ -8,24 +8,21 @@ typealias FetchPlayers = suspend (Int)->Result<List<Player>>
 typealias PositionFilterDialog = (PositionFilterDialogData)->Unit
 
 class PlayersPresenter(private val uiScope: CoroutineScope,
+                       private val view: PlayersView,
                        private val playersFetcher: FetchPlayers,
-                       private val showFilterDialog: PositionFilterDialog
-) {
+                       private val showFilterDialog: PositionFilterDialog) {
   private lateinit var state: PlayersState
-  private lateinit var view: PlayersView
 
   val parcel: Parcelable
     get() = state
 
-  suspend fun handleViewEvent(event: PlayersViewEvent) {
+  fun handleViewEvent(event: PlayersViewEvent) {
     when (event) {
       is PlayersViewEvent.ViewCreated -> {
-        view = event.view
         val newState = event.restoredState ?: PlayersState.Empty
         mutateState(newState)
       }
       is PlayersViewEvent.ViewWithTeamCreated -> {
-        view = event.view
         mutateState(PlayersState.Loading(event.team))
         state.selectedTeam?.apply { loadPlayers(this) }
       }
@@ -47,7 +44,7 @@ class PlayersPresenter(private val uiScope: CoroutineScope,
     }
   }
 
-  private suspend fun loadPlayers(team: Team) = uiScope.launch {
+  private fun loadPlayers(team: Team) = uiScope.launch {
     playersFetcher(team.id).fold(
       onSuccess = { mutateState(PlayersState.Loaded(team, it)) },
       onFailure = { mutateState(PlayersState.Error(team)) }

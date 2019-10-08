@@ -7,13 +7,9 @@ interface PlayersView {
 }
 
 sealed class PlayersViewEvent {
-  data class ViewCreated(val view: PlayersView, val restoredState: PlayersState?) :
-    PlayersViewEvent()
+  data class ViewCreated(val restoredState: PlayersState?) : PlayersViewEvent()
 
-  data class ViewWithTeamCreated(
-    val view: PlayersView,
-    val team: Team
-  ) : PlayersViewEvent()
+  data class ViewWithTeamCreated(val team: Team) : PlayersViewEvent()
 
   data class Sort(val sorting: PlayersSorting) : PlayersViewEvent()
   object Filter : PlayersViewEvent()

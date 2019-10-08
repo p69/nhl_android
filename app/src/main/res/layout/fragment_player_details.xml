@@ -14,4 +14,14 @@
         android:layout_marginStart="@dimen/activity_vertical_margin"
         style="@style/TextAppearance.AppCompat.Large"
         />
+    <ProgressBar
+        android:id="@+id/flagsLoader"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+    <TextView
+        android:id="@+id/flagsError"
+        android:text="@string/flags_loading_error"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

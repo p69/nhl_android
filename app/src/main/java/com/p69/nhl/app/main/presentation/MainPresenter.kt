@@ -4,26 +4,24 @@ import android.os.*
 import com.p69.nhl.api.*
 import kotlinx.coroutines.*
 
-
+//Some services and other dependencies.
 typealias FetchTeams = suspend ()->Result<List<Team>>
 typealias ShowTeamRoster = (Team)->Unit
 
 
 class MainPresenter(private val uiScope: CoroutineScope,
+                    private val view: MainView,
                     private val fetcher: FetchTeams,
-                    private val showTeamRoster: ShowTeamRoster
-) {
+                    private val showTeamRoster: ShowTeamRoster) {
 
-  private var state: MainState =
-    MainState.Loading
-  private lateinit var view: MainView
+  private var state: MainState = MainState.Loading
+
   val parcel: Parcelable
     get() = state
 
-  suspend fun handleViewEvent(event: MainViewEvent) {
+  fun handleViewEvent(event: MainViewEvent) {
     when(event) {
       is MainViewEvent.ViewStarted -> {
-        view = event.view
         if (event.restoredState != null) {
           mutateState(event.restoredState)
         } else {
@@ -43,7 +41,7 @@ class MainPresenter(private val uiScope: CoroutineScope,
     }
   }
 
-  private suspend fun loadTeams() = uiScope.launch {
+  private fun loadTeams() = uiScope.launch {
     fetcher().fold(
       onSuccess = { mutateState(MainState.Loaded(it)) },
       onFailure = { mutateState(MainState.Error) })

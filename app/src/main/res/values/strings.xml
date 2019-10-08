@@ -19,4 +19,5 @@
     <string name="btn_cancel">Cancel</string>
 
     <string name="players_loading_error">Failed to load players.</string>
+    <string name="flags_loading_error">Failed to load player details</string>
 </resources>

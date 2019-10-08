@@ -7,16 +7,15 @@ import kotlinx.coroutines.*
 typealias DetailsFetcher = suspend (Int)->Result<PlayerDetails>
 
 class PlayerDetailsPresenter(private val detailsFetcher: DetailsFetcher,
+                             private val view: PlayerDetailsView,
                              private val uiScope: CoroutineScope) {
   private lateinit var state: PlayerDetailsState
-  private lateinit var view: PlayerDetailsView
   val parcel: Parcelable
     get() = state
 
-  suspend fun handleViewEvent(event: PlayerDetailsViewEvent) {
+  fun handleViewEvent(event: PlayerDetailsViewEvent) {
     when(event) {
       is PlayerDetailsViewEvent.ViewCreated -> {
-        view = event.view
         if(event.restoredState != null) {
           mutateState(event.restoredState)
         } else {
@@ -36,13 +35,9 @@ class PlayerDetailsPresenter(private val detailsFetcher: DetailsFetcher,
     }
   }
 
-  private suspend fun loadDetails(playerId: Int) = uiScope.launch {
+  private fun loadDetails(playerId: Int) = uiScope.launch {
     detailsFetcher(playerId).fold(
-      onSuccess = { mutateState(
-        PlayerDetailsState.Loaded(
-          it
-        )
-      ) },
+      onSuccess = { mutateState(PlayerDetailsState.Loaded(it)) },
       onFailure = { mutateState(PlayerDetailsState.Error) }
     )
   }

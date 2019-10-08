@@ -6,7 +6,6 @@ interface PlayerDetailsView {
 
 sealed class PlayerDetailsViewEvent {
   data class ViewCreated(
-    val view: PlayerDetailsView,
     val restoredState: PlayerDetailsState? = null
   ) : PlayerDetailsViewEvent()
 

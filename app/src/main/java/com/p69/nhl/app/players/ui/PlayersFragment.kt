@@ -7,7 +7,6 @@ import androidx.appcompat.app.*
 import androidx.recyclerview.widget.*
 import com.p69.nhl.api.*
 import com.p69.nhl.infrastructure.*
-import kotlinx.coroutines.*
 import com.p69.nhl.R
 import com.p69.nhl.app.playerdetails.ui.*
 import com.p69.nhl.app.players.presentation.*
@@ -18,34 +17,22 @@ class PlayersFragment : ScopedFragment(), PlayersView {
 
   private lateinit var recyclerLayoutManager: LinearLayoutManager
   private lateinit var playersAdapter: PlayersRecyclerAdapter
-  private val presenter =
-    PlayersPresenter(
-      this,
-      NhlApi::getPlayers,
-      ::showFilterDialog
-    )
+  private val presenter = PlayersPresenter(this,this, NhlApi::getPlayers, ::showFilterDialog)
   private val playerDetails = lazy { PlayerDetailsFragment() }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setHasOptionsMenu(true)
-
-    val restoredState = savedInstanceState?.getParcelable<PlayersState>(Constants.stateParcelKey)
-    launch {
-      yield()
-      presenter.handleViewEvent(
-        PlayersViewEvent.ViewCreated(this@PlayersFragment, restoredState)
-      )
-    }
   }
 
-  fun selectTeam(team: Team) = launch {
-    presenter.handleViewEvent(
-      PlayersViewEvent.ViewWithTeamCreated(
-        this@PlayersFragment,
-        team
-      )
-    )
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    val restoredState = savedInstanceState?.getParcelable<PlayersState>(Constants.stateParcelKey)
+    presenter.handleViewEvent(PlayersViewEvent.ViewCreated(restoredState))
+  }
+
+  fun selectTeam(team: Team) {
+    presenter.handleViewEvent(PlayersViewEvent.ViewWithTeamCreated(team))
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -76,21 +63,13 @@ class PlayersFragment : ScopedFragment(), PlayersView {
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
-      R.id.actionSortByName -> launch {
-        presenter.handleViewEvent(
-          PlayersViewEvent.Sort(
-            PlayersSorting.Name
-          )
-        )
+      R.id.actionSortByName -> {
+        presenter.handleViewEvent(PlayersViewEvent.Sort(PlayersSorting.Name))
       }
-      R.id.actionSortByNumber -> launch {
-        presenter.handleViewEvent(
-          PlayersViewEvent.Sort(
-            PlayersSorting.Number
-          )
-        )
+      R.id.actionSortByNumber -> {
+        presenter.handleViewEvent(PlayersViewEvent.Sort(PlayersSorting.Number))
       }
-      R.id.actionPositionFilter -> launch {
+      R.id.actionPositionFilter -> {
         presenter.handleViewEvent(PlayersViewEvent.Filter)
       }
     }
@@ -127,11 +106,7 @@ class PlayersFragment : ScopedFragment(), PlayersView {
 
   private fun showFilterDialog(data: PositionFilterDialogData) {
     showPositionFilterDialog(data) { selected ->
-      launch { presenter.handleViewEvent(
-        PlayersViewEvent.PositionFilterApplied(
-          selected
-        )
-      ) }
+      presenter.handleViewEvent(PlayersViewEvent.PositionFilterApplied(selected))
     }
   }
 }

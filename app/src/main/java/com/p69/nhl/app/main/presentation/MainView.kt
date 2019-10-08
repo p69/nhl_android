@@ -7,7 +7,7 @@ interface MainView {
 }
 
 sealed class MainViewEvent {
-  data class ViewStarted(val view: MainView, val restoredState: MainState? = null): MainViewEvent()
+  data class ViewStarted(val restoredState: MainState? = null): MainViewEvent()
   data class TeamSelected(val team: Team): MainViewEvent()
   object RetryLoadTeams: MainViewEvent()
 }
